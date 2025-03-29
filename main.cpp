@@ -217,6 +217,7 @@ int main() {
     
     ::ui ui(physical_device, surface.get());
     static ::canvas canvas{{2048, 2048, ui.tiles.buffer}};
+    static color c = {0, 0, 0, 255};
 
     glfwSetKeyCallback(
         window.get(), 
@@ -227,6 +228,16 @@ int main() {
                     canvas.undo(stack);
                 } else if (key == GLFW_KEY_Y && mods & GLFW_MOD_CONTROL) {
                     canvas.redo(stack);
+                }
+
+                if (key == GLFW_KEY_R) {
+                    c = {255, 0, 0, 255};
+                } else if (key == GLFW_KEY_G) {
+                    c = {0, 255, 0, 255};
+                } else if (key == GLFW_KEY_B) {
+                    c = {0, 0, 255, 255};
+                } else if (key == GLFW_KEY_K) {
+                    c = {0, 0, 0, 255};
                 }
             }
         }
@@ -246,12 +257,13 @@ int main() {
                     static_cast<float>(x),
                     static_cast<float>(y),
                     10.0f,
-                    {0, 0, 0, 255}
+                    c
                 },
                 false
             );
             in_stroke = true;
         }
+
         if (
             glfwGetMouseButton(window.get(), GLFW_MOUSE_BUTTON_LEFT) == 
             GLFW_RELEASE && in_stroke
