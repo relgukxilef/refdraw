@@ -4,6 +4,7 @@
 
 using std::max;
 using std::min;
+using std::sqrt;
 
 void buffer::set(unsigned x, unsigned y, color c) {
     unsigned index = (y * width + x) * 4;
@@ -18,9 +19,10 @@ void canvas::add_stroke_point(stroke_point p, bool end) {
     unsigned bottom = min<unsigned>(p.y + p.radius, data.height - 1);
 
     for (unsigned y = top; y <= bottom; ++y) {
-        float width = std::sqrt(p.radius * p.radius - (y - p.y) * (y - p.y));
-        unsigned left = min<unsigned>(p.x - width, 0);
-        unsigned right = max<unsigned>(p.x + width, data.width - 1);
+        float width = 
+            sqrt(max(0.f, p.radius * p.radius - (y - p.y) * (y - p.y)));
+        unsigned left = max<unsigned>(p.x - width, 0);
+        unsigned right = min<unsigned>(p.x + width, data.width - 1);
         for (unsigned x = left; x <= right; ++x) {
             data.set(x, y, p.c);
         }

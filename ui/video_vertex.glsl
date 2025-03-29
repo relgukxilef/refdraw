@@ -17,5 +17,5 @@ void main() {
         positions[gl_VertexIndex] * 2.0 - 1.0,
         0.0, 1.0
     );
-    vertex_source = positions[gl_VertexIndex] * vec2(720, 480) / vec2(1024);
+    vertex_source = positions[gl_VertexIndex] * vec2(1280, 720) / vec2(2048);
 }

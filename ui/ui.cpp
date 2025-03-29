@@ -2,8 +2,10 @@
 
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 using std::out_ptr;
+using std::fill;
 
 struct file_deleter {
     void operator()(FILE*f) const;
@@ -169,6 +171,7 @@ dynamic_image::dynamic_image(ui &ui, unsigned size) {
         ));
     }
 
+    fill(buffer, buffer + size * size * 4, 255);
 }
 
 void create_shader(
@@ -556,7 +559,7 @@ ui::ui(
         physical_device, &memory_properties
     );
 
-    tiles = dynamic_image(*this, 1024);
+    tiles = dynamic_image(*this, 2048);
 
     {
         auto descriptor_set_layout_binding = {

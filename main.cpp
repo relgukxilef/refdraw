@@ -216,10 +216,26 @@ int main() {
     }
     
     ::ui ui(physical_device, surface.get());
-    dynamic_image colors{ui, 1024};
-    ::canvas canvas{{1024, 1024, colors.buffer}};
+    ::canvas canvas{{2048, 2048, ui.tiles.buffer}};
 
     while (!glfwWindowShouldClose(window.get())) {
+        if (
+            glfwGetMouseButton(window.get(), GLFW_MOUSE_BUTTON_LEFT) == 
+            GLFW_PRESS
+        ) {
+            double x, y;
+            glfwGetCursorPos(window.get(), &x, &y);
+            canvas.add_stroke_point(
+                {
+                    static_cast<float>(x),
+                    static_cast<float>(y),
+                    10.0f,
+                    {0, 0, 0, 255}
+                },
+                false
+            );
+        }
+
         ui.render();
 
         glfwPollEvents();
