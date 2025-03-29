@@ -216,7 +216,23 @@ int main() {
     }
     
     ::ui ui(physical_device, surface.get());
-    ::canvas canvas{{2048, 2048, ui.tiles.buffer}};
+    static ::canvas canvas{{2048, 2048, ui.tiles.buffer}};
+
+    glfwSetKeyCallback(
+        window.get(), 
+        [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+            if (action == GLFW_PRESS) {
+                int stack = mods & GLFW_MOD_SHIFT ? 1 : 0;
+                if (key == GLFW_KEY_Z && mods & GLFW_MOD_CONTROL) {
+                    canvas.undo(stack);
+                } else if (key == GLFW_KEY_Y && mods & GLFW_MOD_CONTROL) {
+                    canvas.redo(stack);
+                }
+            }
+        }
+    );
+
+    bool in_stroke = false;
 
     while (!glfwWindowShouldClose(window.get())) {
         if (
@@ -234,6 +250,19 @@ int main() {
                 },
                 false
             );
+            in_stroke = true;
+        }
+        if (
+            glfwGetMouseButton(window.get(), GLFW_MOUSE_BUTTON_LEFT) == 
+            GLFW_RELEASE && in_stroke
+        ) {
+            canvas.add_stroke_point(
+                {
+                    0, 0, 0, 0
+                },
+                true
+            );
+            in_stroke = false;
         }
 
         ui.render();
